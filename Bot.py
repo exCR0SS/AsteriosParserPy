@@ -4,7 +4,7 @@ from settings import api_key
 
 
 bot = telebot.TeleBot(api_key)
-bosses = ParserOld.get_bosses()
+bosses = Parser.get_bosses()
 
 
 # @bot.message_handler(commands=['start'])
