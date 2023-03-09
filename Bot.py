@@ -2,9 +2,12 @@ import telebot
 import Parser
 from settings import api_key
 
+# ключ бота в файле settings, в github не отправляется
 bot = telebot.TeleBot(api_key)
 
 
+# по команде боту /boss вызывает парсер, получает словарь с именами и датами респа боссов,
+# через цикл отдельными сообщениями отвечает пользователю в чат
 @bot.message_handler(commands=['boss'])
 def start_bot(message):
     bosses = Parser.get_bosses()
