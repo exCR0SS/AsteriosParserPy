@@ -6,10 +6,11 @@ from settings import linkx5
 from settings import linkx7
 from settings import linkx3
 from settings import linkx1
-from settings import bosses_respawn_days_setting
+from settings import bosses_respawn
 
 # ключ бота в файле settings, в github не отправляется
 bot = telebot.TeleBot(api_key)
+last_time = {}
 
 
 @bot.message_handler(commands=['start'])
@@ -71,7 +72,7 @@ def get_author(message):
 @bot.message_handler(commands=['settings'])
 def get_author(message):
     bot.send_message(message.chat.id,
-                     f'Текущие настройки времени возрождения боссов (в днях):{bosses_respawn_days_setting}')
+                     f'Текущие настройки времени возрождения боссов (в днях):{bosses_respawn}')
 
 
 bot.polling()
