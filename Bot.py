@@ -1,6 +1,7 @@
 import telebot
 import Parser
 import settings
+import datetime
 
 # ключ бота в файле settings, в github не отправляется
 bot = telebot.TeleBot(settings.api_key)
@@ -8,16 +9,31 @@ bot = telebot.TeleBot(settings.api_key)
 
 # pm2 start Bot.py --interpreter=python3 для запуска на сервере
 
-# last_message = {}
+# CHAT_BY_DATETIME = ()
 # @bot.message_handler(func=lambda message: True)
-# def echo_all(message):
-#     if message.from_user.id not in last_message:
-#         last_message[message.from_user.id] = message.date - 5
-#         print(last_message)
-#     if message.date - last_message[message.from_user.id] > 5:
-#         bot.reply_to(message, message.text)
-#         last_message[message.from_user.id] = message.date
-#         print(last_message)
+# def on_request(message: telebot.types.Message):
+#     text = 'Обработка!'
+#     need_seconds = 300
+#     current_time = datetime.datetime.now()
+#     last_datetime = CHAT_BY_DATETIME.get(message.chat.id)
+#
+#     # Если первое сообщение (время не задано)
+#     if not last_datetime:
+#         CHAT_BY_DATETIME[message.chat.id] = current_time
+#     else:
+#         # Разница в секундах между текущим временем и временем последнего сообщения
+#         delta_seconds = (current_time - last_datetime).total_seconds()
+#
+#         # Осталось ждать секунд перед отправкой
+#         seconds_left = int(need_seconds - delta_seconds)
+#
+#         # Если время ожидания не закончилось
+#         if seconds_left > 0:
+#             text = f'Подождите {seconds_left} секунд перед выполнение этой команды'
+#         else:
+#             CHAT_BY_DATETIME[message.chat.id] = current_time
+#
+#     bot.reply_to(message, text)
 
 
 @bot.message_handler(commands=['start'])
@@ -77,25 +93,24 @@ def get_author(message):
 
 
 @bot.message_handler(commands=['settings'])
-def get_author(message):
+def get_settings(message):
     bot.send_message(message.chat.id,
                      f'Текущие настройки времени возрождения боссов (в днях):{settings.bosses_respawn}')
 
 
-@bot.message_handler(commands=['fortress'])
-def get_author(message):
-    fort = bot.send_message(message.chat.id, 'Название форта?')
-    result = bot.register_next_step_handler(fort, get_castles_fortress_tp(message.chat.id, False))
-    # bot.reply_to(message.chat.id, )
-    print(result)
-    # bot.send_message(message.chat.id,
-    #                  f'Телепорты к фортам через Alt + B:\n {settings.fortress_tp}')
+# @bot.message_handler(regexp='/\d+')
+# def get_fortress(message):
+#     fortress = bot.send_message(message.chat.id, 'Название форта / замка?')
+#     bot.register_next_step_handler(message, get_castles_fortress_tp(fortress, False))
+# bot.reply_to(message.chat.id, )
+# bot.send_message(message.chat.id,
+#                  f'Телепорты к фортам через Alt + B:\n {settings.fortress_tp}')
 
 
-@bot.message_handler(commands=['castles'])
-def get_author(message):
-    fort = bot.send_message(message.chat.id, 'Название замка?')
-    bot.register_next_step_handler(fort, get_castles_fortress_tp(message.chat.id, True))
+# @bot.message_handler(commands=['castles'])
+# def get_castle(message):
+#     castle = bot.send_message(message.chat.id, 'Название замка?')
+#     bot.register_next_step_handler(message, get_castles_fortress_tp(castle, True))
 
 
 # @bot.message_handler(commands=['castle'])
@@ -107,20 +122,25 @@ def get_author(message):
 # def reply_message_handler(message):
 #     bot.send_message(chat_id=message.reply_to_message.from_user.id, text=message.text)
 
+# @bot.message_handler(commands=['siegeTP'])
+# def req_siegeTP(message):
+#     user_request = message.text
+#
+#
 
-@bot.message_handler(content_types=['text'])
-def get_castles_fortress_tp(message, castle):
-    user_request = message
-    if castle is True:
-        if user_request in settings.castles_tp:
-            return bot.reply_to(message, settings.castles_tp.values())
-        # else:
-        #     return bot.reply_to(message, 'Такого замка нет')
-    else:
-        if user_request in settings.fortress_tp:
-            return bot.reply_to(message, settings.fortress_tp.values())
-        # else:
-        #     return bot.reply_to(message, 'Такого форта нет')
+#
+# @bot.message_handler(commands=['siegeTP'])
+# def get_castles_fortress_tp(message):
+#     # user_request = message.text
+#     castle_fortress = bot.reply_to(message, 'Название форта / замка?')
+#     siegeTP = bot.register_next_step_handler(message, get_castles_fortress_tp(castle_fortress))
+#     if siegeTP in settings.castles_tp:
+#         return bot.reply_to(message, settings.castles_tp.values())
+#     else:
+#         return bot.reply_to(message, 'Такого замка / форта нет')
+
+
+
 
 
 bot.polling()
